@@ -4,6 +4,7 @@ var twitter_keys = require("./keys.js");
 var twitter = require("twitter");
 var spotify = require("spotify");
 var request = require("request");
+var fsPackage = require("fs");
 var inputString = process.argv;
 //var client = new Twitter ({twitter_keys});
 
@@ -12,56 +13,110 @@ var userInput = inputString[2];
 //spotify song name stored here
 var userSong = inputString[3];
 
+//create a switch-case statement to direct which function gets run
+switch (action) {
+	case "my-tweets":
+		philTweets();
+		break;
 
+	case "spotify-this-song":
+		spotifySong();
+		break;
 
-if (userInput === "my-tweets") {
-	//run this code or output
+	case "movie-this":
+		movieInfo();
+		break;	
+
+	case "do-what-it-says":
+		randomText();
+		break;
 }
 
-else if (userInput === "spotify-this-song") {
+//function to pull last 20 tweets
+function philTweets() {
 
-}
+}//end philTweets
 
-else if (userInput === "movie-this") {
+//function to display song info
+function spotifySong() {
 
-}
+}//end spotifySong
 
-else if (userInput === "do-what-it-says") {
+//function to display movie info
+function movieInfo() {
 
-}
+}//end movieInfo
 
-else {
-  //"Not a recognized command";
-}
+//function to display info in random.txt
+function randomText() {
 
-console.log(//output)
-
-
-spotify.search({
-	type: "track",
-	query: "pinball map"
-	}, function(err, data) {
-		if (err) {
-			console.log("Error occurred: " + err);
-			return;
-		}		
-
-		else {
-			console.log(JSON.stringify(data, null, 2));
-		}
+}//end randomText
 
 
-});//end search
 
 
-// //requires the twitter NPM package
-// var Twitter = require("twitter"); 
 
-// var myTweets = {screen_name: 'pakmania'};
-// console.log(myTweets);
-// twitter.get('statuses/user_timeline', myTweets, function(error, tweets, response) {
-//   if (!error) {
-//     console.log(tweets);
-//     console.log(response);
-//   }
-// });
+//requires the twitter NPM package
+
+var myTweets = {screen_name: 'pakmania'};
+
+twitter.get('statuses/user_timeline', myTweets, function(error, tweets, response) {
+  if (!error) {
+    console.log(tweets);
+    console.log(response);
+  }
+});
+
+// if (userInput === "my-tweets") {
+// 	console.log("Twitter stuff here");
+// }
+
+// else if (userInput === "spotify-this-song") {
+// 	console.log("Spotify stuff here");
+// }
+
+// else if (userInput === "movie-this") {
+// 	console.log("movie stuff here");
+// }
+
+// else if (userInput === "do-what-it-says") {
+// 	console.log("read random.txt file");
+// }
+
+// else {
+//   //"Not a recognized command";
+// }
+
+// //console.log(//output);
+
+// spotify.lookup({
+// 	type: "track",
+// 	id: "pinball map"
+// 	}, function(err, data) {
+// 		if (err) {
+// 			console.log("Error occurred: " + err);
+// 			return;
+// 		}		
+
+// 		else {
+// 			console.log(JSON.stringify(data, null, 2));
+// 		}
+//  });//end lookup
+
+// spotify.search({
+// 	type: "track",
+// 	query: "pinball map"
+// 	}, function(err, data) {
+// 		if (err) {
+// 			console.log("Error occurred: " + err);
+// 			return;
+// 		}		
+
+// 		else {
+// 			console.log(JSON.stringify(data, null, 2));
+// 		}
+
+
+// });//end search
+
+
