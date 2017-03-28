@@ -1,12 +1,11 @@
 //pulls in the twitter key data from keys.js
 var twitter_keys = require("./keys.js");
 	console.log(twitter_keys);
-var twitter = require("twitter");
+var Twitter = require("twitter");
 var spotify = require("spotify");
 var request = require("request");
 var fsPackage = require("fs");
 var inputString = process.argv;
-//var client = new Twitter ({twitter_keys});
 
 //command inputs stored here for my-tweets, spotify-this-song, movie-this, do-what-it-says
 var userInput = inputString[2];
@@ -14,7 +13,7 @@ var userInput = inputString[2];
 var userSong = inputString[3];
 
 //create a switch-case statement to direct which function gets run
-switch (action) {
+switch (userInput) {
 	case "my-tweets":
 		philTweets();
 		break;
@@ -34,7 +33,19 @@ switch (action) {
 
 //function to pull last 20 tweets
 function philTweets() {
+	var params = {screen_name: 'pakmania10', count: 20};
 
+	var client = new Twitter(twitter_keys.twitterKeys);
+
+	client.get('statuses/user_timeline', params, function(error, tweets, response) {
+	  if (!error) {
+	  		for (i = 0; i<tweets.length; i++) {
+	  			console.log(tweets[i].created_at);
+	  			console.log(tweets[i].text);
+	  			console.log();
+	  		}
+	  }
+	});
 }//end philTweets
 
 //function to display song info
@@ -58,14 +69,7 @@ function randomText() {
 
 //requires the twitter NPM package
 
-var myTweets = {screen_name: 'pakmania'};
 
-twitter.get('statuses/user_timeline', myTweets, function(error, tweets, response) {
-  if (!error) {
-    console.log(tweets);
-    console.log(response);
-  }
-});
 
 // if (userInput === "my-tweets") {
 // 	console.log("Twitter stuff here");
