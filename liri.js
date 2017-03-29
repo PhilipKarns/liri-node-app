@@ -10,7 +10,7 @@ var inputString = process.argv;
 //command inputs stored here for my-tweets, spotify-this-song, movie-this, do-what-it-says
 var userInput = inputString[2];
 //spotify song name stored here
-var userSong = inputString[3];
+var userSong = [];
 
 //create a switch-case statement to direct which function gets run
 switch (userInput) {
@@ -48,9 +48,38 @@ function philTweets() {
 	});
 }//end philTweets
 
-//function to display song info
-function spotifySong() {
 
+//function to display song info ()
+//example link https://api.spotify.com/v1/albums/1aK0ZfM3mY983J4cKoTHfy
+//want: data.artists.name, data.tracks.items.name(for song name), tracks.items.preview_url, data.name (for album name)
+function spotifySong() {
+	//for loop to capture song title and place in array
+	for (i = 3; i < inputString.length; i++) {
+	userSong.push(inputString[i]);
+}
+
+	spotify.search({
+	type: "track",
+	query: userSong},
+	function(err, data) {
+		if (err) {
+			console.log("Error occurred: " + err);
+			return;
+		}		
+
+		else {
+			for (i = 0; i < data.length; i++) {
+			// 	console.log(data[i]);
+			//console.log("Artist(s): " + data.tracks.items[0].artists[0].name);
+			
+			}
+			console.log("Artist(s): " + data.tracks.items[0].artists[0].name);
+			console.log("Song Name: " + data.tracks.items[0].name);
+			console.log("Preview Song: " + data.tracks.items[0].preview_url);
+			console.log("Album: " + data.tracks.items[0].album.name);
+		}
+
+	});//end spotify.search
 }//end spotifySong
 
 //function to display movie info
