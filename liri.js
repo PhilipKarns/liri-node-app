@@ -1,16 +1,15 @@
 //pulls in the twitter key data from keys.js
 var twitter_keys = require("./keys.js");
-	console.log(twitter_keys);
 var Twitter = require("twitter");
 var spotify = require("spotify");
 var request = require("request");
-var fsPackage = require("fs");
+var fs = require("fs");
 var inputString = process.argv;
 
 //command inputs stored here for my-tweets, spotify-this-song, movie-this, do-what-it-says
 var userInput = inputString[2];
-//spotify song name stored here
-var userSong = [];
+//spotify song or movie name stored here
+var userData = [];
 
 //create a switch-case statement to direct which function gets run
 switch (userInput) {
@@ -55,12 +54,13 @@ function philTweets() {
 function spotifySong() {
 	//for loop to capture song title and place in array
 	for (i = 3; i < inputString.length; i++) {
-	userSong.push(inputString[i]);
+	userData.push(inputString[i]);
+	
 }
-
+	//search spotify for the user's input
 	spotify.search({
 	type: "track",
-	query: userSong},
+	query: userData},
 	function(err, data) {
 		if (err) {
 			console.log("Error occurred: " + err);
@@ -68,88 +68,86 @@ function spotifySong() {
 		}		
 
 		else {
-			for (i = 0; i < data.length; i++) {
-			// 	console.log(data[i]);
-			//console.log("Artist(s): " + data.tracks.items[0].artists[0].name);
-			
-			}
+			 
 			console.log("Artist(s): " + data.tracks.items[0].artists[0].name);
 			console.log("Song Name: " + data.tracks.items[0].name);
 			console.log("Preview Song: " + data.tracks.items[0].preview_url);
 			console.log("Album: " + data.tracks.items[0].album.name);
 		}
-
 	});//end spotify.search
 }//end spotifySong
 
 //function to display movie info
-function movieInfo() {
 
-}//end movieInfo
+function movieInfo() {
+	//empty variable for holding movie name
+	var movieName = "";
+	var rottenTomatoes = "";
+
+	//loop through all words in inputString and + them together
+	for (var i = 3; i < inputString.length; i++) {
+		if (i > 3 && i < inputString.length) {
+			movieName = movieName + "+" + inputString[i];
+			rottenTomatoes = rottenTomatoes + "_" + inputString[i];
+			console.log(rottenTomatoes);
+		}
+		else if (i = 3){
+			movieName += inputString[i];
+			rottenTomatoes += inputString[i];
+		}
+
+		else if (inputString.length < 3) {
+			console.log("http://www.omdbapi.com/?t=Mr.+Nobody&y=&plot=short&r=json");
+		}
+	}
+
+	var queryURL = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json";
+	console.log(queryURL);
+	var rottenTomatoesUrl = "https://www.rottentomatoes.com/m/" + rottenTomatoes;
+	console.log(rottenTomatoesUrl);
+		request(queryURL, function(error, response, body) {
+			console.log("Title: " + JSON.parse(body).Title);
+    		console.log("Year: " + JSON.parse(body).Year);
+    		console.log("IMDB Rating: " + JSON.parse(body).imdbRating);
+    		console.log("Country: " + JSON.parse(body).Country);
+    		console.log("Language: " + JSON.parse(body).Language);
+    		console.log("Plot: " + JSON.parse(body).Plot);
+    		console.log("Actors: " + JSON.parse(body).Actors);
+    		console.log("Rotten Tomatoes Rating: " + JSON.parse(body).Ratings[1].Value);
+    		console.log("Rotten Tomatoes URL: " + rottenTomatoesUrl);
+    	});//end request
+    		
+}; //end movieInfo
 
 //function to display info in random.txt
 function randomText() {
+	fs.readFile("random.txt", "utf8", function(error, data) {
+		
+		//split data by commas
+		var dataArr = data.split(",");
+		
+	//search spotify for song
+	spotify.search({
+		type: "track",
+		query: dataArr[1]},
+		function(err, data) {
+			if (err) {
+				console.log("Error occurred: " + err);
+				return;
+			}		
 
+			else {
+				
+				console.log("Artist(s): " + data.tracks.items[0].artists[0].name);
+				console.log("Song Name: " + data.tracks.items[0].name);
+				console.log("Preview Song: " + data.tracks.items[0].preview_url);
+				console.log("Album: " + data.tracks.items[0].album.name);
+			}
+	});//end spotify.search
+	})//end readFile
 }//end randomText
 
 
 
-
-
-//requires the twitter NPM package
-
-
-
-// if (userInput === "my-tweets") {
-// 	console.log("Twitter stuff here");
-// }
-
-// else if (userInput === "spotify-this-song") {
-// 	console.log("Spotify stuff here");
-// }
-
-// else if (userInput === "movie-this") {
-// 	console.log("movie stuff here");
-// }
-
-// else if (userInput === "do-what-it-says") {
-// 	console.log("read random.txt file");
-// }
-
-// else {
-//   //"Not a recognized command";
-// }
-
-// //console.log(//output);
-
-// spotify.lookup({
-// 	type: "track",
-// 	id: "pinball map"
-// 	}, function(err, data) {
-// 		if (err) {
-// 			console.log("Error occurred: " + err);
-// 			return;
-// 		}		
-
-// 		else {
-// 			console.log(JSON.stringify(data, null, 2));
-// 		}
-//  });//end lookup
-
-// spotify.search({
-// 	type: "track",
-// 	query: "pinball map"
-// 	}, function(err, data) {
-// 		if (err) {
-// 			console.log("Error occurred: " + err);
-// 			return;
-// 		}		
-
-// 		else {
-// 			console.log(JSON.stringify(data, null, 2));
-// 		}
-
-
-// });//end search
 
 
